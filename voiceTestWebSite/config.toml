@@ -1,9 +1,10 @@
-baseURL = 'http://localhost:1313'
+baseURL = 'http://polly-test-0810.s3-website-ap-northeast-1.amazonaws.com'
 languageCode = 'en-us'
 defaultContentLanguage = 'en'
 title = 'Surreal AWS-Polly'
 theme = 'hugo-theme-relearn-main'
 defaultContentLanguageInSubdir = true
+uglyurls = true
 
 [params]
     description = 'A place of excellence'
