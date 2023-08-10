@@ -1,0 +1,17 @@
+baseURL = 'http://localhost:1313'
+languageCode = 'en-us'
+defaultContentLanguage = 'en'
+title = 'Surreal AWS-Polly'
+theme = 'hugo-theme-relearn-main'
+defaultContentLanguageInSubdir = true
+
+[params]
+    description = 'A place of excellence'
+    author = 'martin'
+    showVisitedLinks = true
+
+[Languages]
+[Languages.en]
+title = 'Route to Excellence'
+weight = 1
+languageName = 'English'
