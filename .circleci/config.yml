@@ -28,7 +28,7 @@ jobs:
 
       - run:
           name: Install AWS CLI
-          command:
+          command: |
             sudo dnf install python3-pip -y
             pip install awscli
 
