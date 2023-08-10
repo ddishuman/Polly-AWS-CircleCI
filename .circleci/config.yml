@@ -31,11 +31,11 @@ jobs:
             sudo make altinstall
             sudo rm -rf /opt/Python-3.8.12
             python3 --version
-      - run:
-          name: Install AWS CLI
-          command: |
-            sudo dnf install python3-pip -y
-            pip install awscli
+      # - run:
+      #     name: Install AWS CLI
+      #     command: |
+      #       sudo dnf install python3-pip -y
+      #       pip install awscli
       - run:
           name: Install Hugo
           command: |
@@ -55,3 +55,7 @@ workflows:
     jobs:
       - aws-cli-cred-setup:
           context: aws
+  hugo-build:
+    jobs:
+      - build:
+          context: hugo
