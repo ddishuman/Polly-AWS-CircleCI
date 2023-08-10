@@ -12,7 +12,7 @@ jobs:
       - run:
           name: Install Python 3.8
           command: |
-            dnf install sudo
+            dnf install sudo -y
             cd /opt
             sudo wget https://www.python.org/ftp/python/3.8.12/Python-3.8.12.tgz
             sudo tar xzf Python-3.8.12.tgz
