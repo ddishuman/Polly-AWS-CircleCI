@@ -10,9 +10,19 @@ jobs:
       - checkout
 
       - run:
-          name: Install Python 3.6
+          name: Install Python 3.8
           command: |
-            sudo dnf install -y pip
+            sudo dnf update -y
+            sudo dnf groupinstall "Development Tools"
+            sudo dnf install -y openssl-devel bzip2-devel libffi-devel zlib-devel
+            cd /opt
+            sudo wget https://www.python.org/ftp/python/3.8.12/Python-3.8.12.tgz
+            sudo tar xzf Python-3.8.12.tgz
+            cd Python-3.8.12
+            sudo ./configure --enable-optimizations
+            sudo make altinstall
+            sudo rm -rf /opt/Python-3.8.12
+            python3 --version
 
       - run:
           name: Install AWS CLI
