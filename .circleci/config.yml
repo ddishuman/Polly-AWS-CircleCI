@@ -54,4 +54,4 @@ workflows:
   aws-cli-hugo:
     jobs:
       - build:
-          context: aws
+          # context: aws
