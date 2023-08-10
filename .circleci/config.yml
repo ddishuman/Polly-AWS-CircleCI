@@ -13,7 +13,7 @@ jobs:
           name: Install Python 3.8
           command: |
             dnf install sudo -y
-            sudo dnf groupinstall "Development Tools"
+            sudo dnf groupinstall "Development Tools" -y
             sudo dnf install -y openssl-devel bzip2-devel libffi-devel zlib-devel
             cd /opt
             sudo dnf install wget -y
