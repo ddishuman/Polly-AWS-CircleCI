@@ -26,6 +26,7 @@ jobs:
             cd /opt
             sudo dnf install wget -y
             sudo dnf install tar -y
+            sudo dnf install unzip -y
             sudo wget https://www.python.org/ftp/python/3.8.12/Python-3.8.12.tgz
             sudo tar xzf Python-3.8.12.tgz
             cd Python-3.8.12
