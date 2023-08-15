@@ -1,6 +1,6 @@
 version: 2.1
-# orbs:
-#   aws-cli: circleci/aws-cli@4.0.0
+orbs:
+  aws-cli: circleci/aws-cli@4.0.0
 jobs:
   # aws-cli-cred-setup:
   #       executor: aws-cli/default
@@ -39,12 +39,15 @@ jobs:
             sudo make altinstall
             sudo rm -rf /opt/Python-3.8.12
             python3 --version
-      # - aws-cli/setup
-      - run:
-          name: Install AWS CLI
-          command: |
-            sudo dnf install python3-pip -y
-            pip install awscli --upgrade
+      - aws-cli/setup:
+          aws-access-key-id: AWS_ACCESS_KEY
+          aws-secret-access-key: AWS_ACCESS_SECRET
+          aws-region: AWS_REGION_NAME
+      # - run:
+      #     name: Install AWS CLI
+      #     command: |
+      #       sudo dnf install python3-pip -y
+      #       pip install awscli --upgrade
       - run:
           name: Install Hugo
           command: |
@@ -56,8 +59,10 @@ jobs:
           command: |
             cd voiceTestWebSite
             hugo
-      - run:
+      - deploy:
           command:
+            aws configure list
+
             aws s3 sync --delete --acl "public-read" --sse "AES256" voiceTestWebSite/public/ s3://polly-test-0810
 # workflows:
 #   aws-cli:
