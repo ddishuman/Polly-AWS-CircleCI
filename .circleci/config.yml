@@ -55,6 +55,6 @@ workflows:
   aws-cli-hugo:
     jobs:
       - aws-cli-cred-setup:
-          context: myContext
-      # - build:
-      #     context: myContext
+          context: aws
+      - build:
+          context: aws
