@@ -1,6 +1,6 @@
 version: 2.1
-# orbs:
-#   aws-cli: circleci/aws-cli@4.0.0
+orbs:
+  aws-cli: circleci/aws-cli@4.0.0
 jobs:
   # aws-cli-cred-setup:
   #       executor: aws-cli/default
@@ -14,10 +14,10 @@ jobs:
       - image: amazonlinux
     working_directory: ~/repo
 
-    environment:
-      aws-access-key-id: AWS_ACCESS_KEY
-      aws-secret-access-key: AWS_ACCESS_SECRET
-      aws-region: AWS_REGION_NAME
+    # environment:
+    #   aws-access-key-id: AWS_ACCESS_KEY
+    #   aws-secret-access-key: AWS_ACCESS_SECRET
+    #   aws-region: AWS_REGION_NAME
 
     steps:
       - checkout
@@ -39,14 +39,17 @@ jobs:
             sudo make altinstall
             sudo rm -rf /opt/Python-3.8.12
             python3 --version
-      # - aws-cli/setup
-      - run:
-          name: Install AWS CLI
-          command: |
-            sudo dnf install python3-pip -y
-            echo 'export PATH=$HOME/.local/bin:$PATH' >> $BASH_ENV
-            source $BASH_ENV
-            pip install awscli --upgrade
+      - aws-cli/setup:
+          aws-access-key-id: AWS_ACCESS_KEY
+          aws-secret-access-key: AWS_ACCESS_SECRET
+          aws-region: AWS_REGION_NAME
+          # - run:
+      #     name: Install AWS CLI
+      #     command: |
+      #       sudo dnf install python3-pip -y
+      #       echo 'export PATH=$HOME/.local/bin:$PATH' >> $BASH_ENV
+      #       source $BASH_ENV
+      #       pip install awscli --upgrade
       - run:
           name: Install Hugo
           command: |
