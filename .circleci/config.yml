@@ -1,6 +1,6 @@
 version: 2.1
-orbs:
-  aws-cli: circleci/aws-cli@4.0.0
+# orbs:
+#   aws-cli: circleci/aws-cli@4.0.0
 jobs:
   # aws-cli-cred-setup:
   #       executor: aws-cli/default
@@ -39,12 +39,12 @@ jobs:
             sudo make altinstall
             sudo rm -rf /opt/Python-3.8.12
             python3 --version
-      - aws-cli/setup
-      # - run:
-      #     name: Install AWS CLI
-      #     command: |
-      #       sudo dnf install python3-pip -y
-      #       pip install awscli
+      # - aws-cli/setup
+      - run:
+          name: Install AWS CLI
+          command: |
+            sudo dnf install python3-pip -y
+            pip install awscli
       - run:
           name: Install Hugo
           command: |
