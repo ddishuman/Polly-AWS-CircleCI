@@ -52,7 +52,7 @@ jobs:
           command:
             aws s3 sync --delete --acl "public-read" --sse "AES256" voiceTestWebSite/public/ s3://polly-test-0810
 workflows:
-  aws-cli-hugo:
+  aws-cli:
     jobs:
       - aws-cli-cred-setup:
           context: aws
