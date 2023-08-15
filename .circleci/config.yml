@@ -16,7 +16,7 @@ jobs:
 
     steps:
       - checkout
-      - aws-cli/setup
+      
       - run:
           name: Install Python 3.8
           command: |
@@ -34,6 +34,7 @@ jobs:
             sudo make altinstall
             sudo rm -rf /opt/Python-3.8.12
             python3 --version
+      - aws-cli/setup
       # - run:
       #     name: Install AWS CLI
       #     command: |
