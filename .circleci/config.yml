@@ -39,10 +39,7 @@ jobs:
             sudo make altinstall
             sudo rm -rf /opt/Python-3.8.12
             python3 --version
-      - aws-cli/setup:
-          aws-access-key-id: AWS_ACCESS_KEY
-          aws-secret-access-key: AWS_ACCESS_SECRET
-          aws-region: AWS_REGION_NAME
+      - aws-cli/install
           # - run:
       #     name: Install AWS CLI
       #     command: |
