@@ -59,7 +59,7 @@ jobs:
             cd voiceTestWebSite
             hugo
       - deploy:
-          command:
+          command: |
             aws configure list
             aws s3 sync --delete --acl "public-read" --sse "AES256" voiceTestWebSite/public/ s3://polly-test-0810
 # workflows:
