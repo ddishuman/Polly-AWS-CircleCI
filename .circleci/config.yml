@@ -44,7 +44,7 @@ jobs:
           name: Install AWS CLI
           command: |
             sudo dnf install python3-pip -y
-            pip install awscli
+            pip install awscli --upgrade
       - run:
           name: Install Hugo
           command: |
@@ -56,7 +56,7 @@ jobs:
           command: |
             cd voiceTestWebSite
             hugo
-      - deploy:
+      - run:
           command:
             aws s3 sync --delete --acl "public-read" --sse "AES256" voiceTestWebSite/public/ s3://polly-test-0810
 # workflows:
