@@ -56,5 +56,5 @@ workflows:
     jobs:
       - aws-cli-cred-setup:
           context: myContext
-      - build:
-          context: myContext
+      # - build:
+      #     context: myContext
