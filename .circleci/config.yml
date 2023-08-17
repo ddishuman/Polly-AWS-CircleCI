@@ -2,13 +2,13 @@ version: 2.1
 orbs:
   aws-cli: circleci/aws-cli@4.0.0
 jobs:
-  aws-cli-cred-setup:
-        executor: aws-cli/default
-        steps: 
-          - aws-cli/setup:
-              aws-access-key-id: AWS_ACCESS_KEY
-              aws-secret-access-key: AWS_ACCESS_SECRET
-              aws-region: AWS_REGION_NAME
+  # aws-cli-cred-setup:
+  #       executor: aws-cli/default
+  #       steps: 
+  #         - aws-cli/setup:
+  #             aws-access-key-id: AWS_ACCESS_KEY
+  #             aws-secret-access-key: AWS_ACCESS_SECRET
+  #             aws-region: AWS_REGION_NAME
   build:
     docker:
       - image: amazonlinux
@@ -62,10 +62,10 @@ jobs:
           command: |
             aws configure list
             aws s3 sync --delete --acl "public-read" --sse "AES256" voiceTestWebSite/public/ s3://polly-test-0810
-workflows:
-  aws-cli:
-    jobs:
-      - aws-cli-cred-setup:
-          context: aws
+# workflows:
+#   aws-cli:
+#     jobs:
+#       - aws-cli-cred-setup:
+#           context: aws
 #       - build:
 #           context: aws
