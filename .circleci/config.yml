@@ -78,7 +78,9 @@ jobs:
           command: |
             yum install -y zip
             cd polly_lambda && zip -r ../sam-config/lambda.zip ./*
+            ls
             cd ..
+            ls
             bash -x lambda_libraries.sh
       - run:
           name: Upload Lambda Code to S3
