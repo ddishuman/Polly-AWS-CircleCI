@@ -1,0 +1,46 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+Description: The setup for an AWS Lambda function that uses Polly to convert articles to audio.
+Resources:
+  PollyLambda:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: lambda_function.lambda_handler
+      Runtime: python3.8
+      Timeout: 300
+      CodeUri: ./lambda.zip
+      Policies:
+        - AmazonS3FullAccess
+        - CloudWatchFullAccess
+        - CloudWatchLogsFullAccess
+        - AmazonPollyFullAccess
+      Environment:
+        Variables:
+          supported_languages: "en"
+          default_language: "en"
+          en: "Joanna"
+          polly_bucket: "polly-website-test-0810"
+          output: "mp3"
+      Events:
+        S3BucketEvent:
+          Type: S3
+          Properties:
+            Bucket:
+                Ref: ArticleBucket
+            Events:
+                - 's3:ObjectCreated:*'
+            Filter:
+                S3Key:
+                  Rules:
+                    -
+                      Name: prefix
+                      Value: articles/
+                    -
+                      Name: suffix
+                      Value: .md
+
+  ArticleBucket:
+      Type: 'AWS::S3::Bucket'
+      Properties:
+        BucketName: "polly-article-test-0810"                    
+  

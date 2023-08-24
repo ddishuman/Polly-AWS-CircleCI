@@ -2,13 +2,6 @@ version: 2.1
 orbs:
   aws-cli: circleci/aws-cli@4.0.0
 jobs:
-  # aws-cli-cred-setup:
-  #       executor: aws-cli/default
-  #       steps: 
-  #         - aws-cli/setup:
-  #             aws-access-key-id: AWS_ACCESS_KEY
-  #             aws-secret-access-key: AWS_ACCESS_SECRET
-  #             aws-region: AWS_REGION_NAME
   build:
     docker:
       - image: amazonlinux
@@ -34,15 +27,7 @@ jobs:
             sudo make altinstall
             sudo rm -rf /opt/Python-3.8.12
             python3 --version
-      #- aws-cli/install
       - aws-cli/setup
-          # - run:
-      #     name: Install AWS CLI
-      #     command: |
-      #       sudo dnf install python3-pip -y
-      #       echo 'export PATH=$HOME/.local/bin:$PATH' >> $BASH_ENV
-      #       source $BASH_ENV
-      #       pip install awscli --upgrade
       - run:
           name: Install Hugo
           command: |
@@ -52,7 +37,7 @@ jobs:
       - run:
           name: Add articles to be converted to audio by Polly
           command: |
-            aws s3 sync voiceTestWebSite/articles/ s3://polly-code-test-0810/articles/
+            aws s3 sync voiceTestWebSite/articles/ s3://polly-article-test-0810/articles/
       - run:
           name: Build Website
           command: |
@@ -62,10 +47,59 @@ jobs:
           command: |
             aws configure list
             aws s3 sync --delete --acl "public-read" --sse "AES256" voiceTestWebSite/public/ s3://polly-test-0810
-# workflows:
-#   aws-cli:
-#     jobs:
-#       - aws-cli-cred-setup:
-#           context: aws
-#       - build:
-#           context: aws
+
+  lambda_build:
+    docker:
+      - image: amazonlinux
+    working_directory: ~/repo
+
+    steps:
+      - checkout  
+      - run:
+          name: Install Python 3.8
+          command: |
+            dnf install sudo -y
+            sudo dnf groupinstall "Development Tools" -y
+            sudo dnf install -y openssl-devel bzip2-devel libffi-devel zlib-devel
+            cd /opt
+            sudo dnf install wget -y
+            sudo dnf install tar -y
+            sudo dnf install unzip -y
+            sudo wget https://www.python.org/ftp/python/3.8.12/Python-3.8.12.tgz
+            sudo tar xzf Python-3.8.12.tgz
+            cd Python-3.8.12
+            sudo ./configure --enable-optimizations
+            sudo make altinstall
+            sudo rm -rf /opt/Python-3.8.12
+            python3 --version
+      - aws-cli/setup
+      - run:
+          name: Create Lamda Package
+          command: |
+            yum install -y zip
+            cd polly_lambda && zip -r ../sam-config/lambda.zip ./*
+            cd ..
+            bash -x lambda_libraries.sh
+      - run:
+          name: Upload Lambda Code to S3
+          command: |
+            aws cloudformation package \
+            --template-file sam-config/template.yaml \
+            --s3-bucket route-to-excellence-code-bucket \
+            --output-template-file sam-config/packaged-template.yaml
+      - run:
+          name: Deploy Lambda Changes
+          command: |
+            aws cloudformation deploy \
+            --template-file sam-config/packaged-template.yaml \
+            --stack-name polly-lambda-stack \
+            --capabilities CAPABILITY_IAM \
+            --region ap-northeast-1
+workflows:
+  version: 2
+  build-lambda-and-website:
+    jobs:
+      - lambda_build
+      - build:
+          requires:
+            - lambda_build
