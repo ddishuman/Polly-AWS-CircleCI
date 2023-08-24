@@ -26,9 +26,9 @@ def lambda_handler(event, context):
         voice_id = os.environ[voice_language]
 
         response = polly.synthesize_speech(
-            OutputFormat = output,
-            Text = text,
-            VoiceId = voice_id
+            OutputFormat=output,
+            Text=text,
+            VoiceId=voice_id
         )
 
         polly_title = "{}.{}".format(filename, output)
@@ -39,7 +39,7 @@ def lambda_handler(event, context):
                 with open(output_title, "ab") as f:
                     f.write(stream.read())
 
-        s3.Object(polly_bucket, polly_title).upload_file(os.path.join("/tmp", polly_title), ExtraArgs={'ACL':'public-read'})
+        s3.Object(polly_bucket, polly_title).upload_file(os.path.join("/tmp", polly_title),ExtraArgs={'ACL':'public-read'})
 
     except Exception as e:
         print('Error getting object {} from bucket {}. Make sure they exist and your bucket is in the same region as this function'.format(key, s3_bucket))
