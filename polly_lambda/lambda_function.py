@@ -5,6 +5,7 @@ nltk.data.path.append("/var/task/nltk_data")
 import os
 import urllib.parse
 from contextlib import closing
+from pyssml.AmazonSpeech import AmazonSpeech
 
 polly = boto3.client('polly')
 s3 = boto3.resource('s3')
@@ -32,9 +33,11 @@ def lambda_handler(event, context):
 
         parts = split_text(text, 3000)
         for part in parts:
+            part = add_ssml(part)
             response = polly.synthesize_speech(
                 OutputFormat=output,
                 Text=text,
+                TextType='ssml',
                 VoiceId=voice_id
             )
             print(part)
@@ -67,3 +70,8 @@ def split_text(text, max_length):
     if not any(joined_sentence in js for js in joined_sentences):
         joined_sentences.append(joined_sentence)
     return joined_sentences
+
+def add_ssml(part):
+    s = AmazonSpeech()
+    s.prosody({'rate':'fast', 'pitch': 'low'}, part)
+    return s.ssml()
