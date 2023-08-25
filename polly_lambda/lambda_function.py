@@ -1,4 +1,7 @@
 import boto3
+from textblob import TextBlob
+import nltk
+nltk.data.path.append("/var/task/nltk_data")
 import os
 import urllib.parse
 from contextlib import closing
@@ -25,22 +28,42 @@ def lambda_handler(event, context):
 
         voice_id = os.environ[voice_language]
 
-        response = polly.synthesize_speech(
-            OutputFormat=output,
-            Text=text,
-            VoiceId=voice_id
-        )
-
         polly_title = "{}.{}".format(filename, output)
 
-        if "AudioStream" in response:
-            with closing(response['AudioStream']) as stream:
-                output_title = os.path.join("/tmp", polly_title)
-                with open(output_title, "ab") as f:
-                    f.write(stream.read())
+        parts = split_text(text, 3000)
+        for part in parts:
+            response = polly.synthesize_speech(
+                OutputFormat=output,
+                Text=text,
+                VoiceId=voice_id
+            )
+            print(part)
 
+            if "AudioStream" in response:
+                with closing(response['AudioStream']) as stream:
+                    output_title = os.path.join("/tmp", polly_title)
+                    with open(output_title, "ab") as f:
+                        f.write(stream.read())
+
+       
         s3.Object(polly_bucket, polly_title).upload_file(os.path.join("/tmp", polly_title),ExtraArgs={'ACL':'public-read'})
 
     except Exception as e:
         print('Error getting object {} from bucket {}. Make sure they exist and your bucket is in the same region as this function'.format(key, s3_bucket))
         raise e
+
+def split_text(text, max_length):
+    # Needs whitespece to avoid Pollly saying punctuation mark e.g. "dot"
+    parsed_text = [str(sentence) + " " for sentence in TextBlob(text).sentences]
+
+    joined_sentences = []
+    joined_sentence = ""
+    for sentence in parsed_text:
+        if len(sentence) + len(joined_sentence) < max_length:
+            joined_sentence += sentence
+        else:
+            joined_sentences.append(joined_sentence)
+            joined_sentence = sentence
+    if not any(joined_sentence in js for js in joined_sentences):
+        joined_sentences.append(joined_sentence)
+    return joined_sentences
