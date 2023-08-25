@@ -37,7 +37,7 @@ jobs:
       - run:
           name: Add articles to be converted to audio by Polly
           command: |
-            aws s3 sync voiceTestWebSite/articles/ s3://polly-article-test-0810/articles/
+            aws s3 sync voiceTestWebSite/articles/ s3://polly-article-test-0810/articles/ --size-only
       - run:
           name: Build Website
           command: |
